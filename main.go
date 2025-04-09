@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -37,5 +38,6 @@ func main() {
 		json.NewEncoder(w).Encode(products)
 	})
 
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Service berjalan pada port :5000")
+	http.ListenAndServe(":5000", nil)
 }

@@ -1,0 +1,29 @@
+image: golang:1.21
+
+stages:
+  - build
+  - deploy
+
+variables:
+  BINARY_NAME: application
+  ZIP_NAME: base-app.zip
+
+before_script:
+  - apt-get update && apt-get install -y zip python3-pip unzip
+  - pip3 install awsebcli --upgrade
+
+build:
+  stage: build
+  script:
+    - GOOS=linux GOARCH=amd64 go build -o $BINARY_NAME
+    - zip $ZIP_NAME $BINARY_NAME
+  artifacts:
+    paths:
+      - $ZIP_NAME
+
+deploy:
+  stage: deploy
+  script:
+    - eb init $EB_APP_NAME --platform "Go" --region $AWS_DEFAULT_REGION
+    - eb use $EB_ENV_NAME
+    - eb deploy
